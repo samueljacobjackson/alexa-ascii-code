@@ -1,0 +1,24 @@
+{
+  "intents": [
+    {
+      "intent": "ConvertIntent",
+      "slots": [
+        {
+          "name": "char",
+          "type": "Character"
+        },
+        {
+          "name":"case",
+          "type":"Case"
+        },
+        {
+          "name":"type",
+          "type":"Type"
+        }
+      ]
+    },
+    {
+      "intent" :"AMAZON.StopIntent"
+    }
+  ]
+}
