@@ -1,2 +1,4 @@
 UpperCase
 LowerCase
+Lower Case
+Upper Case

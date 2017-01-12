@@ -1,7 +1,16 @@
+ConvertIntent {char} to {type}
+ConvertIntent {case} {char} to {type}
+ConvertIntent {char} symbol to {type}
+ConvertIntent {char} sign to {type}
+ConvertIntent {char} mark to {type}
+
 ConvertIntent convert {char} to {type}
-ConvertIntent convert character {char} to {type}
 ConvertIntent convert {case} {char} to {type}
-ConvertIntent convert {case} character {char} to {type}
 ConvertIntent convert {char} symbol to {type}
 ConvertIntent convert {char} sign to {type}
 ConvertIntent convert {char} mark to {type}
+
+ConvertIntent convert character {char} to {type}
+ConvertIntent convert character {char} symbol to {type}
+ConvertIntent convert character {char} sign to {type}
+ConvertIntent convert character {char} mark to {type}
