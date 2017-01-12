@@ -14,7 +14,7 @@ AsciiCode.prototype.eventHandlers.onSessionStarted = function (sessionStartedReq
 
 AsciiCode.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
     console.log("AsciiCode onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
-    var speechOutput = '<speak>You can ask me to convert any printable ascii character to hex, decimal, octal, or binary!</speak>';
+    var speechOutput = '<speak>What would you like me to convert?</speak>';
     var repromptText = '<speak>You can say convert character ' + spellOut('B') + ' to hex, or convert character exclamation point to decimal</speak>';
     response.ask(speechOutput, repromptText);
 };
@@ -194,18 +194,18 @@ AsciiCode.prototype.intentHandlers = {
                 var lower = character.toLowerCase().charCodeAt(0).toString(2);
                 var unit = 'binary';
             } else {
-                var speechOutput = "<speak>I'm sorry I did not understand what conversion you wanted. You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal</speak>';
-                var repromptText = '<speak>You can say convert character ' + spellOut('B') + ' to hex, or convert character exclamation point to decimal</speak>';
-                response.ask(speechOutput, repromptText);
+                var speechOutput = "<speak>I'm sorry I did not understand what conversion you wanted. You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. WHat would you like to convert?</speak>';
+                var repromptText = "<speak>You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. What would you like to convert?</speak>';
+                response.tell(speechOutput, repromptText);
             } 
             
             if (isAlpha) {
                 if (intent.slots.case.value) {
-                    if (intent.slots.case.value.toLowerCase() === 'uppercase') {
+                    if (intent.slots.case.value.toLowerCase() === 'uppercase' || intent.slots.case.value.toLowerCase() === 'upper case') {
                         var cardText = '"' + character.toUpperCase() + '" is represented as ' + unit + ' value ' + upper;
-                        var speakText = 'Uppercase ' + speakCharacter + ' is represented as ' + unit + ' value ' + spellOut(lower);
-                    } else if (intent.slots.case.value.toLowerCase() === 'lowercase') {
-                        var cardText = '"' + character.toUpperCase() + '" is represented as ' + unit + ' value ' + upper;
+                        var speakText = 'Uppercase ' + speakCharacter + ' is represented as ' + unit + ' value ' + spellOut(upper);
+                    } else if (intent.slots.case.value.toLowerCase() === 'lowercase' || intent.slots.case.value.toLowerCase() === 'lower case') {
+                        var cardText = '"' + character.toLowerCase() + '" is represented as ' + unit + ' value ' + lower;
                         var speakText = 'Lowercase ' + speakCharacter + ' is represented as ' + unit + ' value ' + spellOut(lower);
                     }
                 } else {
@@ -218,12 +218,20 @@ AsciiCode.prototype.intentHandlers = {
             }
             response.tellWithCard('<speak>' + speakText + '</speak>', cardTitle, cardText);
         } else {
-            var speechOutput = "<speak>I'm sorry I did not understand. You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal</speak>';
-            var repromptText = '<speak>You can say convert character ' + spellOut('B') + ' to hex, or convert character exclamation point to decimal</speak>';
+            var speechOutput = "<speak>I'm sorry I did not understand. You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. What would you like to convert?</speak>';
+            var repromptText = "<speak>You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. What would you like to convert?</speak>';
             response.ask(speechOutput, repromptText);
         }
     },
+    'AMAZON.HelpIntent' : function (intent, session, response) {
+        var speechOutput = '<speak>You may ask me to convert any printable ascii character to hex, binary, decimal or octal. for example to convert character ' + spellOut('Y') + ' to hex just say, convert ' + spellOut('Y') + ' to hex. What would you like to convert?</speak>';
+        var repromptText = '<speak>You may ask me to convert any printable ascii character to hex, binary, decimal or octal. for example to convert character ' + spellOut('Y') + ' to hex just say, convert ' + spellOut('Y') + ' to hex. What would you like to convert?</speak>';
+        response.ask(speechOutput, repromptText);
+    },
     'AMAZON.StopIntent' : function (intent, session, response) {
+        response.tell('');
+    },
+    'AMAZON.CancelIntent' : function (intent, session, response) {
         response.tell('');
     }
 }
