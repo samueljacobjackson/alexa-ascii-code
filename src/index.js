@@ -29,9 +29,23 @@ AsciiCode.prototype.intentHandlers = {
         var character;
         var speakCharacter;
         var isAlpha = false;
-        if (intent.slots.char.value && intent.slots.type.value) {
-            speakCharacter = intent.slots.char.value;
-            switch (intent.slots.char.value.toLowerCase()) {
+        
+        if (intent.slots.phonetic.value){
+            character = intent.slots.phonetic.value;
+        }
+        else if (intent.slots.char.value){
+            character = intent.slots.char.value;
+        }
+        else {
+            var speechOutput = "<speak>I'm sorry I did not understand. You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. What would you like to convert?</speak>';
+            var repromptText = "<speak>You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. What would you like to convert?</speak>';
+            response.ask(speechOutput, repromptText);
+            return;
+        }
+        
+        if (intent.slots.type.value) {
+            speakCharacter = character;
+            switch (character.toLowerCase()) {
                 case 'space':
                     character = ' ';
                     break;
@@ -167,59 +181,68 @@ AsciiCode.prototype.intentHandlers = {
                     character = '~';
                     break;
                 default:
-                    character = intent.slots.char.value.split('')[0];
+                    character = character.split('')[0];
                     speakCharacter = spellOut(character);
                     isAlpha = isNaN(character);
                     break;
             }
 
+            var cardTitle;
+            var upper;
+            var lower;
+            var unit;
+            var cardText;
+            var speakText;
+            var speechOutput;
+            var repromptText;
+            
             if (intent.slots.type.value && intent.slots.type.value === 'hex') {
-                var cardTitle = 'Ascii to Hex';
-                var upper = character.toUpperCase().charCodeAt(0).toString(16);
-                var lower = character.toLowerCase().charCodeAt(0).toString(16);
-                var unit = 'hex';
+                cardTitle = 'Ascii to Hex';
+                upper = character.toUpperCase().charCodeAt(0).toString(16);
+                lower = character.toLowerCase().charCodeAt(0).toString(16);
+                unit = 'hex';
             } else if (intent.slots.type.value && intent.slots.type.value === 'decimal') {
-                var cardTitle = 'Ascii to Decimal';
-                var upper = character.toUpperCase().charCodeAt(0).toString();
-                var lower = character.toLowerCase().charCodeAt(0).toString();
-                var unit = 'decimal';
+                cardTitle = 'Ascii to Decimal';
+                upper = character.toUpperCase().charCodeAt(0).toString();
+                lower = character.toLowerCase().charCodeAt(0).toString();
+                unit = 'decimal';
             } else if (intent.slots.type.value && intent.slots.type.value === 'octal') {
-                var cardTitle = 'Ascii to Octal';
-                var upper = character.toUpperCase().charCodeAt(0).toString(8);
-                var lower = character.toLowerCase().charCodeAt(0).toString(8);
-                var unit = 'octal';
+                cardTitle = 'Ascii to Octal';
+                upper = character.toUpperCase().charCodeAt(0).toString(8);
+                lower = character.toLowerCase().charCodeAt(0).toString(8);
+                unit = 'octal';
             } else if (intent.slots.type.value && intent.slots.type.value === 'binary') {
-                var cardTitle = 'Ascii to Binary';
-                var upper = character.toUpperCase().charCodeAt(0).toString(2);
-                var lower = character.toLowerCase().charCodeAt(0).toString(2);
-                var unit = 'binary';
+                cardTitle = 'Ascii to Binary';
+                upper = character.toUpperCase().charCodeAt(0).toString(2);
+                lower = character.toLowerCase().charCodeAt(0).toString(2);
+                unit = 'binary';
             } else {
-                var speechOutput = "<speak>I'm sorry I did not understand what conversion you wanted. You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. WHat would you like to convert?</speak>';
-                var repromptText = "<speak>You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. What would you like to convert?</speak>';
+                speechOutput = "<speak>I'm sorry I did not understand what conversion you wanted. You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. WHat would you like to convert?</speak>';
+                repromptText = "<speak>You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. What would you like to convert?</speak>';
                 response.tell(speechOutput, repromptText);
             } 
             
             if (isAlpha) {
                 if (intent.slots.case.value) {
                     if (intent.slots.case.value.toLowerCase() === 'uppercase' || intent.slots.case.value.toLowerCase() === 'upper case') {
-                        var cardText = '"' + character.toUpperCase() + '" is represented as ' + unit + ' value ' + upper;
-                        var speakText = 'Uppercase ' + speakCharacter + ' is represented as ' + unit + ' value ' + spellOut(upper);
+                        cardText = '"' + character.toUpperCase() + '" is represented as ' + unit + ' value ' + upper;
+                        speakText = 'Uppercase ' + speakCharacter + ' is represented as ' + unit + ' value ' + spellOut(upper);
                     } else if (intent.slots.case.value.toLowerCase() === 'lowercase' || intent.slots.case.value.toLowerCase() === 'lower case') {
-                        var cardText = '"' + character.toLowerCase() + '" is represented as ' + unit + ' value ' + lower;
-                        var speakText = 'Lowercase ' + speakCharacter + ' is represented as ' + unit + ' value ' + spellOut(lower);
+                        cardText = '"' + character.toLowerCase() + '" is represented as ' + unit + ' value ' + lower;
+                        speakText = 'Lowercase ' + speakCharacter + ' is represented as ' + unit + ' value ' + spellOut(lower);
                     }
                 } else {
-                    var cardText = 'Uppercase "' + character.toUpperCase() + '" is represented as '+ unit + ' value ' + upper + ' and lowercase is represented as ' + lower;
-                    var speakText = 'Uppercase ' + speakCharacter + ' is represented as ' + unit + ' value ' + spellOut(upper) + ' and lowercase is represented as ' + spellOut(lower);
+                    cardText = 'Uppercase "' + character.toUpperCase() + '" is represented as '+ unit + ' value ' + upper + ' and lowercase is represented as ' + lower;
+                    speakText = 'Uppercase ' + speakCharacter + ' is represented as ' + unit + ' value ' + spellOut(upper) + ' and lowercase is represented as ' + spellOut(lower);
                 }
             } else {
-                var cardText = '"' + character.toUpperCase() + '" is represented as '+ unit + ' value ' + upper;
-                var speakText = speakCharacter + ' is represented as ' + unit + ' value ' + spellOut(upper);
+                cardText = '"' + character.toUpperCase() + '" is represented as '+ unit + ' value ' + upper;
+                speakText = speakCharacter + ' is represented as ' + unit + ' value ' + spellOut(upper);
             }
             response.tellWithCard('<speak>' + speakText + '</speak>', cardTitle, cardText);
         } else {
-            var speechOutput = "<speak>I'm sorry I did not understand. You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. What would you like to convert?</speak>';
-            var repromptText = "<speak>You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. What would you like to convert?</speak>';
+            speechOutput = "<speak>I'm sorry I did not understand. You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. What would you like to convert?</speak>';
+            repromptText = "<speak>You can say convert character " + spellOut('B') + ' to hex, or convert character exclamation point to decimal. What would you like to convert?</speak>';
             response.ask(speechOutput, repromptText);
         }
     },
